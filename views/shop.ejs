@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= pageTitle %></title>
+  </head>
+  <body>
+    <main>
+      <% if(prods.length > 0) { %>
+      <h1>This is shop Page</h1>
+      <ul>
+        <% for (let product of prods) { %>
+        <li><%= product.name %></li>
+        <% } %>
+      </ul>
+      <% } else { %>
+      <h1>No Products Found!</h1>
+      <% } %>
+    </main>
+  </body>
+</html>
