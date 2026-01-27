@@ -1,15 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= pageTitle %></title>
-  </head>
+<%- include('includes/head.ejs') %>
   <body>
+    <%- include('includes/nav.ejs') %>
     <h1>This is add product page</h1>
     <form action="/admin/add-product" method="POST">
       <input name="name" />
       <button type="submit">Add</button>
     </form>
-  </body>
-</html>
+<%- include('includes/end.ejs') %>
