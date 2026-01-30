@@ -10,6 +10,5 @@ exports.postAddProduct = (req, res) => {
 };
 
 exports.getProducts = (req, res, next) => {
-// const products = items
   res.render("shop", { pageTitle: "shop", prods: products });
 };
