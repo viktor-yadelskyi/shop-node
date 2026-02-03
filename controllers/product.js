@@ -5,12 +5,12 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res) => {
-  const product = createProduct(req.body.title);
+  const product = createProduct({title: req.body.title});
   product.save();
   res.redirect("/");
 };
 
-exports.getProducts = (req, res, next) => {
-  const product = fetchAll();
-  res.render("shop", { pageTitle: "shop", prods: product });
+exports.getProducts = async (req, res, next) => {
+  const products = await fetchAll();
+  res.render("shop", { pageTitle: "shop", prods: products });
 };

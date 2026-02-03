@@ -1,19 +1,42 @@
-const products = [];
+const fs = require("fs").promises;
+const path = require("path");
 
-function createProduct(title) {
+const p = path.join(
+  path.dirname(require.main.filename),
+  "data",
+  "products.json",
+);
+
+function createProduct(productData) {
   return {
-    title,
-    save() {
+    ...productData,
+    async save() {
+      let data = "";
+
+      try {
+        data = await fs.readFile(p, { encoding: "utf-8" });
+      } catch {
+        console.log("DATA ERROR");
+      }
+      let products = data ? JSON.parse(data) : [];
       products.push(this);
-    }
+
+      await fs.writeFile(p, JSON.stringify(products), { encoding: "utf-8" });
+    },
   };
 }
 
-function fetchAll() {
-  return products;
+async function fetchAll() {
+  try {
+    const data = await fs.readFile(p, { encoding: "utf-8" });
+    return data ? JSON.parse(data) : [];
+  } catch (e) {
+    console.error("Error read or parsing JSON:", e);
+    return [];
+  }
 }
 
 module.exports = {
   createProduct,
-  fetchAll
+  fetchAll,
 };
