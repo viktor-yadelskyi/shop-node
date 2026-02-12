@@ -8,6 +8,8 @@
       <ul>
         <% for (let product of prods) { %>
         <li><%= product.title %></li>
+        <p>Price: <%= product.price %></p>
+        <p>Description  <%= product.description %></p>
         <% } %>
       </ul>
       <% } else { %>

@@ -9,7 +9,10 @@ exports.getProducts = (req, res, next) => {
 };
 
 exports.postAddProduct = (req, res) => {
-  const product = createProduct({ title: req.body.title });
+  const title = req.body.title;
+  const price = req.body.price;
+  const description = req.body.description;
+  const product = createProduct({ title, price, description });
   product.save();
-  res.redirect("/shop/product-list");
+  res.redirect("/");
 };
