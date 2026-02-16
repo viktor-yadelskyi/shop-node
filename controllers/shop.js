@@ -1,4 +1,4 @@
-const { fetchAll } = require("../models/product");
+const { fetchAll, findProductById } = require("../models/product");
 
 exports.getProductsList = async (req, res, next) => {
   const products = await fetchAll();
@@ -11,8 +11,14 @@ exports.getProductsList = async (req, res, next) => {
 
 exports.getProduct = async (req, res, next) => {
   const prodId = req.params.id;
-  console.log(prodId);
-  res.redirect("/");
+
+  const product = await findProductById(prodId);
+  console.log(product);
+
+  if (!product) {
+    return res.status(404).send("Product not found");
+  }
+
 };
 
 exports.getIndex = async (req, res, next) => {

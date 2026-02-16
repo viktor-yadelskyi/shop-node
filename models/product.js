@@ -19,7 +19,7 @@ function createProduct(productData) {
         console.log("DATA ERROR");
       }
       let products = data ? JSON.parse(data) : [];
-      // replace for uniqueID
+      // replace later for smt unique
       if (!this.id) {
         this.id = Math.random().toString();
       }
@@ -41,7 +41,20 @@ async function fetchAll() {
   }
 }
 
+async function findProductById(id) {
+  try {
+    const data = await fs.readFile(p, "utf-8");
+    const products = data ? JSON.parse(data) : [];
+
+    return products.find((product) => product.id === id) || null;
+  } catch (e) {
+    console.error("Error read or parsing JSON:", e);
+    return null;
+  }
+}
+
 module.exports = {
   createProduct,
   fetchAll,
+  findProductById,
 };
