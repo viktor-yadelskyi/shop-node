@@ -9,6 +9,12 @@ exports.getProductsList = async (req, res, next) => {
   });
 };
 
+exports.getProduct = async (req, res, next) => {
+  const prodId = req.params.id;
+  console.log(prodId);
+  res.redirect("/");
+};
+
 exports.getIndex = async (req, res, next) => {
   const products = await fetchAll();
   res.render("shop/index", {
@@ -19,7 +25,11 @@ exports.getIndex = async (req, res, next) => {
 };
 
 exports.getCart = (req, res, next) => {
-  res.render("shop/cart", { pageTitle: "Cart" });
+  res.render("shop/cart", { path: "/cart", pageTitle: "Cart" });
+};
+
+exports.getOrders = (req, res, next) => {
+  res.render("shop/orders", { path: "/orders", pageTitle: "Your orders" });
 };
 
 exports.getCheckout = (req, res, next) => {

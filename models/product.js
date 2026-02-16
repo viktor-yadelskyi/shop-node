@@ -19,6 +19,11 @@ function createProduct(productData) {
         console.log("DATA ERROR");
       }
       let products = data ? JSON.parse(data) : [];
+      // replace for uniqueID
+      if (!this.id) {
+        this.id = Math.random().toString();
+      }
+
       products.push(this);
 
       await fs.writeFile(p, JSON.stringify(products), "utf-8");

@@ -5,11 +5,20 @@
     <main>
       <% if(prods.length > 0) { %>
       <h1>This is shop Page</h1>
-      <ul>
+      <div>
         <% for (let product of prods) { %>
-        <li><%= product.title %></li>
+        <h2><%= product.title %></h2>
+        <p>Price: <%= product.price %></p>
+        <p>Description  <%= product.description %></p>
+        <div>
+          <a href="/products/<%= product.id %>"> Details</a>
+            <form action="/add-to-cart">
+              <a type="submit" method="POST">Add to cart</a>
+            </form>
+        </div>
+
         <% } %>
-      </ul>
+        </div>
       <% } else { %>
       <h1>No Products Found!</h1>
       <% } %>

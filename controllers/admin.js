@@ -1,11 +1,16 @@
-const { createProduct } = require("../models/product");
+const { createProduct, fetchAll } = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add-product", { pageTitle: "Add product" });
 };
 
-exports.getProducts = (req, res, next) => {
-  res.render("admin/products", { pageTitle: "Admin products" });
+exports.getProducts = async (req, res, next) => {
+  const products = await fetchAll();
+
+  res.render("admin/products", {
+    pageTitle: "Admin products",
+    prods: products,
+  });
 };
 
 exports.postAddProduct = (req, res) => {
