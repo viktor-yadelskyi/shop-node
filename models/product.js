@@ -46,7 +46,7 @@ async function findProductById(id) {
     const data = await fs.readFile(p, "utf-8");
     const products = data ? JSON.parse(data) : [];
 
-    return products.find((product) => product.id === id) || null;
+    return products.find((product) => String(product.id) === id) || null;
   } catch (e) {
     console.error("Error read or parsing JSON:", e);
     return null;

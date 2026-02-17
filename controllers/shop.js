@@ -10,15 +10,22 @@ exports.getProductsList = async (req, res, next) => {
 };
 
 exports.getProduct = async (req, res, next) => {
-  const prodId = req.params.id;
+  try {
+    const prodId = req.params.id;
+    const product = await findProductById(prodId);
 
-  const product = await findProductById(prodId);
-  console.log(product);
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
 
-  if (!product) {
-    return res.status(404).send("Product not found");
+    res.render("shop/product-detail", {
+      product,
+      pageTitle: product.title,
+      path: "/products",
+    });
+  } catch (err) {
+    next(err);
   }
-
 };
 
 exports.getIndex = async (req, res, next) => {

@@ -2,7 +2,13 @@
 <body>
   <%- include('../includes/nav.ejs') %>
   <main>
-    <h1>Product-detail</h1>
+    <h1><%= product.title %></h1>
+    <hr />
+    <h2><%= product.price %></h2>
+    <h2><%= product.description %></h2>
+    <form action="/cart" method="POST">
+      <button type="submit">Add to cart</button>
+    </form>
   </main>
   <%- include('../includes/end.ejs') %>
 </body>
