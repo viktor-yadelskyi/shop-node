@@ -1,4 +1,4 @@
-const fs = require("fs").promises;
+const fs = require("fs/promises");
 const path = require("path");
 
 const p = path.join(
@@ -46,7 +46,9 @@ async function findProductById(id) {
     const data = await fs.readFile(p, "utf-8");
     const products = data ? JSON.parse(data) : [];
 
-    return products.find((product) => String(product.id) === id) || null;
+    return (
+      products.find((product) => String(product.id) === String(id)) || null
+    );
   } catch (e) {
     console.error("Error read or parsing JSON:", e);
     return null;

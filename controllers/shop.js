@@ -1,4 +1,7 @@
 const { fetchAll, findProductById } = require("../models/product");
+const { addProduct } = require("../models/cart");
+
+const Cart = require("../models/cart");
 
 exports.getProductsList = async (req, res, next) => {
   const products = await fetchAll();
@@ -39,6 +42,20 @@ exports.getIndex = async (req, res, next) => {
 
 exports.getCart = (req, res, next) => {
   res.render("shop/cart", { path: "/cart", pageTitle: "Cart" });
+};
+
+exports.postCart = async (req, res, next) => {
+  const prodId = req.body.prodId;
+  const product = await findProductById(prodId);
+
+  if (!product) {
+    console.log("Product not found", prodId);
+    return res.redirect("/cart");
+  }
+
+  await addProduct(prodId, product.price);
+
+  res.redirect("/cart");
 };
 
 exports.getOrders = (req, res, next) => {

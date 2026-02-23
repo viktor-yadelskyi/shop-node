@@ -10,7 +10,7 @@
         <h2><%= product.title %></h2>
         <p>Price: <%= product.price %></p>
         <p>Description  <%= product.description %></p>
-        <button>Add to cart</button>
+          <%- include('../includes/add-to-cart.ejs', {product: product}) %>
         <% } %>
         </div>
       <% } else { %>
