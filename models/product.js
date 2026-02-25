@@ -19,12 +19,29 @@ function createProduct(productData) {
         console.log("DATA ERROR");
       }
       let products = data ? JSON.parse(data) : [];
-      // replace later for smt unique
-      if (!this.id) {
-        this.id = Math.random().toString();
-      }
 
-      products.push(this);
+      const product = { ...this };
+      delete product.save;
+      // replace later for smt unique
+      console.log("EDIT ID:", product.id);
+      console.log(
+        "EXISTING:",
+        products.map((p) => p.id),
+      );
+      if (!product.id) {
+        product.id = Math.random().toString();
+        products.push(product);
+      } else {
+        const index = products.findIndex(
+          (p) => String(p.id) === String(product.id),
+        );
+
+        if (index !== -1) {
+          products[index] = product;
+        } else {
+          products.push(product);
+        }
+      }
 
       await fs.writeFile(p, JSON.stringify(products), "utf-8");
     },

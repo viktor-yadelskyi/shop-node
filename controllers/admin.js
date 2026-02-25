@@ -40,6 +40,20 @@ exports.getProducts = async (req, res, next) => {
   });
 };
 
+exports.postEditProduct = async (req, res, next) => {
+  const prodId = req.body.productId;
+
+  const updatedProduct = createProduct({
+    id: prodId,
+    title: req.body.title,
+    price: req.body.price,
+    description: req.body.description,
+  });
+
+  await updatedProduct.save();
+  res.redirect("/admin/products");
+};
+
 exports.postAddProduct = (req, res) => {
   const title = req.body.title;
   const price = req.body.price;
