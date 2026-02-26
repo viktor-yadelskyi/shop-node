@@ -1,5 +1,6 @@
 const fs = require("fs/promises");
 const path = require("path");
+const crypto = require('crypto');
 
 const p = path.join(
   path.dirname(require.main.filename),
@@ -22,14 +23,9 @@ function createProduct(productData) {
 
       const product = { ...this };
       delete product.save;
-      // replace later for smt unique
-      console.log("EDIT ID:", product.id);
-      console.log(
-        "EXISTING:",
-        products.map((p) => p.id),
-      );
+ 
       if (!product.id) {
-        product.id = Math.random().toString();
+        product.id = crypto.randomBytes(4).toString('hex');
         products.push(product);
       } else {
         const index = products.findIndex(
