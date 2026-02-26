@@ -72,8 +72,26 @@ async function findProductById(id) {
   }
 }
 
+async function deleteProductById(id) {
+  try {
+    const data = await fs.readFile(p, "utf-8");
+    const products = data ? JSON.parse(data) : [];
+
+    const filteredProducts = products.filter(
+      (product) => String(product.id) !== String(id),
+    );
+
+    if (products.length !== filteredProducts.length) {
+      await fs.writeFile(p, JSON.stringify(filteredProducts), "utf-8");
+    }
+  } catch (e) {
+    console.error("Error read or parsing JSON:", e);
+  }
+}
+
 module.exports = {
   createProduct,
   fetchAll,
   findProductById,
+  deleteProductById,
 };

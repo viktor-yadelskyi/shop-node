@@ -2,6 +2,7 @@ const {
   createProduct,
   fetchAll,
   findProductById,
+  deleteProductById,
 } = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -61,4 +62,10 @@ exports.postAddProduct = (req, res) => {
   const product = createProduct({ title, price, description });
   product.save();
   res.redirect("/");
+};
+
+exports.postDeleteProduct = async(req, res) => {
+  const prodId = req.body.productId;
+  await deleteProductById(prodId);
+  res.redirect("/admin/products");
 };
