@@ -1,11 +1,8 @@
 const fs = require("fs/promises");
 const path = require("path");
+const { fetchAll } = require("./product");
 
-const p = path.join(
-    path.dirname(require.main.filename), 
-    "data", 
-    "cart.json",
-);
+const p = path.join(path.dirname(require.main.filename), "data", "cart.json");
 
 async function addProduct(id, productPrice) {
   let cart = { products: [], totalPrice: 0 };
@@ -25,12 +22,12 @@ async function addProduct(id, productPrice) {
   let updatedProduct;
 
   if (existingProduct) {
-    updatedProduct = { ...existingProduct };
+    updatedProduct = { ...existingProduct, price: Number(productPrice) };
     updatedProduct.qty = updatedProduct.qty + 1;
     cart.products = [...cart.products];
     cart.products[existingProductIndex] = updatedProduct;
   } else {
-    updatedProduct = { id: id, qty: 1 };
+    updatedProduct = { id: id, qty: 1, price: Number(productPrice) };
     cart.products = [...cart.products, updatedProduct];
   }
 
@@ -39,4 +36,23 @@ async function addProduct(id, productPrice) {
   await fs.writeFile(p, JSON.stringify(cart), "utf-8");
 }
 
-module.exports = { addProduct };
+async function getCartData() {
+  const cartItems = await fs.readFile(p, "utf-8");
+  const cart = JSON.parse(cartItems);
+  const allProducts = await fetchAll();
+
+  const parsedData = cart.products.map((item) => {
+    const product = allProducts.find((p) => p.id === item.id);
+    if (product) {
+      return { ...product, qty: item.qty };
+    }
+    return null;
+  });
+
+  return {
+    products: parsedData.filter((item) => item !== null),
+    totalPrice: cart.totalPrice,
+  };
+}
+
+module.exports = { addProduct, getCartData };

@@ -1,5 +1,5 @@
 const { fetchAll, findProductById } = require("../models/product");
-const { addProduct } = require("../models/cart");
+const { addProduct, getCartData } = require("../models/cart");
 
 const Cart = require("../models/cart");
 
@@ -40,8 +40,14 @@ exports.getIndex = async (req, res, next) => {
   });
 };
 
-exports.getCart = (req, res, next) => {
-  res.render("shop/cart", { path: "/cart", pageTitle: "Cart" });
+exports.getCart = async (req, res, next) => {
+  const cart = await getCartData();
+  res.render("shop/cart", {
+    path: "/cart",
+    pageTitle: "Cart",
+    products: cart.products,
+    totalPrice: cart.totalPrice,
+  });
 };
 
 exports.postCart = async (req, res, next) => {

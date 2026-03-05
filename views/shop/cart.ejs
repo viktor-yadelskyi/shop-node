@@ -3,6 +3,17 @@
   <%- include('../includes/nav.ejs') %>
   <main>
     <h1>Cart</h1>
+    <% if(products.length > 0) { %>
+      <% for (let product of products) { %>
+          <p><%= product.title %></p>
+          <p>Price: <%= product.price %></p>
+           <p>TotalPrice: <%= totalPrice %></p>
+          <p>Description  <%= product.description %></p>
+          <p>QTY: <%= product.qty %></p>
+        <% } %>
+    <% } else { %>
+        <h1>No Products Found!</h1>
+      <% } %>
   </main>
   <%- include('../includes/end.ejs') %>
 </body>
