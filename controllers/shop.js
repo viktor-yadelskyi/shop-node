@@ -1,7 +1,9 @@
 const { fetchAll, findProductById } = require("../models/product");
-const { addProduct, getCartData } = require("../models/cart");
-
-const Cart = require("../models/cart");
+const {
+  addProduct,
+  getCartData,
+  deleteProductCartById,
+} = require("../models/cart");
 
 exports.getProductsList = async (req, res, next) => {
   const products = await fetchAll();
@@ -60,6 +62,13 @@ exports.postCart = async (req, res, next) => {
   }
 
   await addProduct(prodId, product.price);
+
+  res.redirect("/cart");
+};
+
+exports.postCardDeleteProduct = async (req, res) => {
+  const prodId = req.body.productId;
+  await deleteProductCartById(prodId);
 
   res.redirect("/cart");
 };

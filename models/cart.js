@@ -55,4 +55,27 @@ async function getCartData() {
   };
 }
 
-module.exports = { addProduct, getCartData };
+async function deleteProductCartById(id) {
+  try {
+    const data = await fs.readFile(p, "utf-8");
+    const cart = data ? JSON.parse(data) : [];
+
+    const filteredProducts = cart.products.filter(
+      (product) => String(product.id) !== String(id),
+    );
+
+    if (cart.products.length !== filteredProducts.length) {
+      cart.products = filteredProducts;
+      cart.totalPrice = filteredProducts.reduce(
+        (sum, item) => sum + item.price * item.qty,
+        0,
+      );
+
+      await fs.writeFile(p, JSON.stringify(cart), "utf-8");
+    }
+  } catch (e) {
+    console.error("Error read or parsing JSON:", e);
+  }
+}
+
+module.exports = { addProduct, getCartData, deleteProductCartById };
