@@ -1,6 +1,7 @@
 const express = require("express");
 
 const errorController = require("./controllers/404");
+const mongoConnect = require("./util/database");
 
 const app = express();
 
@@ -15,4 +16,7 @@ app.use(shopRoutes);
 
 app.use(errorController.get404Page);
 
-app.listen(3000);
+mongoConnect((client) => {
+  console.log(client);
+  app.listen(3000);
+});
