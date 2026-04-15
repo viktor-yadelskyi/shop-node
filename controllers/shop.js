@@ -1,4 +1,4 @@
-const { fetchAll, findProductById } = require("../models/product");
+const { fetchAll, findProductById, Product } = require("../models/product");
 const {
   addProduct,
   getCartData,
@@ -6,12 +6,17 @@ const {
 } = require("../models/cart");
 
 exports.getProductsList = async (req, res, next) => {
-  const products = await fetchAll();
-  res.render("shop/product-list", {
-    pageTitle: "All products",
-    path: "/products",
-    prods: products,
-  });
+  try {
+    const products = await Product.fetchAll();
+
+    res.render("shop/product-list", {
+      pageTitle: "All products",
+      path: "/products",
+      prods: products,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getProduct = async (req, res, next) => {
@@ -34,12 +39,19 @@ exports.getProduct = async (req, res, next) => {
 };
 
 exports.getIndex = async (req, res, next) => {
-  const products = await fetchAll();
-  res.render("shop/index", {
-    pageTitle: "Main Page",
-    path: "/",
-    prods: products,
-  });
+  try {
+    const products = await Product.fetchAll();
+
+    res.render("shop/index", {
+      pageTitle: "Main Page",
+      path: "/",
+      prods: products,
+    });
+  } catch (err) {
+    const error = new Error(err);
+    error.httpStatusCode = 500;
+    return next(error);
+  }
 };
 
 exports.getCart = async (req, res, next) => {

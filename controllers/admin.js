@@ -3,6 +3,7 @@ const {
   fetchAll,
   findProductById,
   deleteProductById,
+  Product,
 } = require("../models/product");
 
 exports.getAddProduct = (req, res, next) => {
@@ -59,12 +60,16 @@ exports.postAddProduct = (req, res) => {
   const title = req.body.title;
   const price = req.body.price;
   const description = req.body.description;
-  const product = createProduct({ title, price, description });
-  product.save();
-  res.redirect("/");
+  // const product = createProduct({ title, price, description });
+  // product.save();
+  const product = new Product(title, price, description);
+  product.save().then((res) => {
+    console.log("Created product");
+    res.redirect("/admin/products");
+  });
 };
 
-exports.postDeleteProduct = async(req, res) => {
+exports.postDeleteProduct = async (req, res) => {
   const prodId = req.body.productId;
   await deleteProductById(prodId);
   res.redirect("/admin/products");

@@ -1,93 +1,132 @@
-const fs = require("fs/promises");
-const path = require("path");
-const crypto = require('crypto');
+// const fs = require("fs/promises");
+// const path = require("path");
+// const crypto = require('crypto');
 
-const p = path.join(
-  path.dirname(require.main.filename),
-  "data",
-  "products.json",
-);
+// const p = path.join(
+//   path.dirname(require.main.filename),
+//   "data",
+//   "products.json",
+// );
 
-function createProduct(productData) {
-  return {
-    ...productData,
-    async save() {
-      let data = "";
+// function createProduct(productData) {
+//   return {
+//     ...productData,
+//     async save() {
+//       let data = "";
 
-      try {
-        data = await fs.readFile(p, "utf-8");
-      } catch {
-        console.log("DATA ERROR");
-      }
-      let products = data ? JSON.parse(data) : [];
+//       try {
+//         data = await fs.readFile(p, "utf-8");
+//       } catch {
+//         console.log("DATA ERROR");
+//       }
+//       let products = data ? JSON.parse(data) : [];
 
-      const product = { ...this };
-      delete product.save;
- 
-      if (!product.id) {
-        product.id = crypto.randomBytes(4).toString('hex');
-        products.push(product);
-      } else {
-        const index = products.findIndex(
-          (p) => String(p.id) === String(product.id),
-        );
+//       const product = { ...this };
+//       delete product.save;
 
-        if (index !== -1) {
-          products[index] = product;
-        } else {
-          products.push(product);
-        }
-      }
+//       if (!product.id) {
+//         product.id = crypto.randomBytes(4).toString('hex');
+//         products.push(product);
+//       } else {
+//         const index = products.findIndex(
+//           (p) => String(p.id) === String(product.id),
+//         );
 
-      await fs.writeFile(p, JSON.stringify(products), "utf-8");
-    },
-  };
-}
+//         if (index !== -1) {
+//           products[index] = product;
+//         } else {
+//           products.push(product);
+//         }
+//       }
 
-async function fetchAll() {
-  try {
-    const data = await fs.readFile(p, "utf-8");
-    return data ? JSON.parse(data) : [];
-  } catch (e) {
-    console.error("Error read or parsing JSON:", e);
-    return [];
+//       await fs.writeFile(p, JSON.stringify(products), "utf-8");
+//     },
+//   };
+// }
+
+// async function fetchAll() {
+//   try {
+//     const data = await fs.readFile(p, "utf-8");
+//     return data ? JSON.parse(data) : [];
+//   } catch (e) {
+//     console.error("Error read or parsing JSON:", e);
+//     return [];
+//   }
+// }
+
+// async function findProductById(id) {
+//   try {
+//     const data = await fs.readFile(p, "utf-8");
+//     const products = data ? JSON.parse(data) : [];
+
+//     return (
+//       products.find((product) => String(product.id) === String(id)) || null
+//     );
+//   } catch (e) {
+//     console.error("Error read or parsing JSON:", e);
+//     return null;
+//   }
+// }
+
+// async function deleteProductById(id) {
+//   try {
+//     const data = await fs.readFile(p, "utf-8");
+//     const products = data ? JSON.parse(data) : [];
+
+//     const filteredProducts = products.filter(
+//       (product) => String(product.id) !== String(id),
+//     );
+
+//     if (products.length !== filteredProducts.length) {
+//       await fs.writeFile(p, JSON.stringify(filteredProducts), "utf-8");
+//     }
+//   } catch (e) {
+//     console.error("Error read or parsing JSON:", e);
+//   }
+// }
+
+const getDb = require("../util/database").getDb;
+
+class Product {
+  constructor(title, price, description) {
+    this.title = title;
+    this.price = price;
+    this.description = description;
   }
-}
 
-async function findProductById(id) {
-  try {
-    const data = await fs.readFile(p, "utf-8");
-    const products = data ? JSON.parse(data) : [];
-
-    return (
-      products.find((product) => String(product.id) === String(id)) || null
-    );
-  } catch (e) {
-    console.error("Error read or parsing JSON:", e);
-    return null;
+  save() {
+    const db = getDb();
+    return db
+      .collection("products")
+      .insertOne(this)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
-}
 
-async function deleteProductById(id) {
-  try {
-    const data = await fs.readFile(p, "utf-8");
-    const products = data ? JSON.parse(data) : [];
-
-    const filteredProducts = products.filter(
-      (product) => String(product.id) !== String(id),
-    );
-
-    if (products.length !== filteredProducts.length) {
-      await fs.writeFile(p, JSON.stringify(filteredProducts), "utf-8");
-    }
-  } catch (e) {
-    console.error("Error read or parsing JSON:", e);
+  static fetchAll() {
+    const db = getDb();
+    return db
+      .collection("products")
+      .find()
+      .toArray()
+      .then((products) => {
+        console.log(products);
+        return products;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
 
 module.exports = {
-  createProduct,
-  fetchAll,
-  findProductById,
-  deleteProductById,
+  // createProduct,
+  // fetchAll,
+  // findProductById,
+  // deleteProductById,
+  Product,
 };
