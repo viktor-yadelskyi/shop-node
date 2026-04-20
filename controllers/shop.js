@@ -22,7 +22,7 @@ exports.getProductsList = async (req, res, next) => {
 exports.getProduct = async (req, res, next) => {
   try {
     const prodId = req.params.id;
-    const product = await findProductById(prodId);
+    const product = await Product.findById(prodId);
 
     if (!product) {
       return res.status(404).send("Product not found");

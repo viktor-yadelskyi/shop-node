@@ -1,3 +1,4 @@
+const mongodb = require("mongodb");
 const {
   createProduct,
   fetchAll,
@@ -5,6 +6,8 @@ const {
   deleteProductById,
   Product,
 } = require("../models/product");
+
+const ObjectId = mongodb.ObjectId;
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add-product", {
@@ -15,53 +18,64 @@ exports.getAddProduct = (req, res, next) => {
 };
 
 exports.getEditProduct = async (req, res, next) => {
-  const editMode = req.query.edit === "true";
-  const prodId = req.params.productId;
-  const product = await findProductById(prodId);
-  console.log(product);
+  try {
+    const editMode = req.query.edit === "true";
+    const prodId = req.params.productId;
+    console.log(prodId);
+    const product = await Product.findById(prodId);
 
-  // replace to error page later
-  if (!product) {
+    if (!product) {
+      return res.status(404).send("Product not found");
+    }
+
+    res.render("admin/edit-product", {
+      pageTitle: "Add product",
+      path: "/admin/edit-product",
+      product: product,
+      editing: editMode,
+    });
+  } catch {
     return res.redirect("/");
   }
-
-  res.render("admin/edit-product", {
-    pageTitle: "Add product",
-    path: "/admin/edit-product",
-    product: product,
-    editing: editMode,
-  });
 };
 
 exports.getProducts = async (req, res, next) => {
-  const products = await fetchAll();
+  try {
+    const products = await Product.fetchAll();
 
-  res.render("admin/products", {
-    pageTitle: "Admin products",
-    prods: products,
-  });
+    res.render("admin/products", {
+      pageTitle: "Admin products",
+      prods: products,
+    });
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.postEditProduct = async (req, res, next) => {
-  const prodId = req.body.productId;
+  try {
+    const prodId = req.body.productId;
 
-  const updatedProduct = createProduct({
-    id: prodId,
-    title: req.body.title,
-    price: req.body.price,
-    description: req.body.description,
-  });
+    const product = new Product(
+      new ObjectId(prodId),
+      req.body.title,
+      req.body.price,
+      req.body.description,
+    );
 
-  await updatedProduct.save();
-  res.redirect("/admin/products");
+    await product.save();
+
+    res.redirect("/admin/products");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 exports.postAddProduct = (req, res) => {
   const title = req.body.title;
   const price = req.body.price;
   const description = req.body.description;
-  // const product = createProduct({ title, price, description });
-  // product.save();
+
   const product = new Product(title, price, description);
   product.save().then((res) => {
     console.log("Created product");
