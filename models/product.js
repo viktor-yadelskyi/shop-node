@@ -89,16 +89,16 @@ const mongodb = require("mongodb");
 const getDb = require("../util/database").getDb;
 
 class Product {
-  constructor(_id, title, price, description) {
+  constructor({ _id = null, title, price, description }) {
+    this._id = _id ? new mongodb.ObjectId(_id) : null;
     this.title = title;
     this.price = price;
     this.description = description;
-    this._id = new mongodb.ObjectId(_id);
   }
 
   save() {
     const db = getDb();
-    let dbOp = null;
+    let dbOp;
     if (this._id) {
       dbOp = db
         .collection("products")
@@ -140,6 +140,18 @@ class Product {
       .then((product) => {
         console.log(product);
         return product;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }
+
+  static deleteById(prodId) {
+    const db = getDb();
+    db.collection("products")
+      .deleteOne({ _id: new mongodb.ObjectId(prodId) })
+      .then((result) => {
+        console.log("Deleted");
       })
       .catch((err) => {
         console.log(err);

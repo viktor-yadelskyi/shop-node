@@ -51,14 +51,12 @@ exports.getProducts = async (req, res, next) => {
 
 exports.postEditProduct = async (req, res, next) => {
   try {
-    const prodId = req.body.productId;
-
-    const product = new Product(
-      prodId,
-      req.body.title,
-      req.body.price,
-      req.body.description,
-    );
+    const product = new Product({
+      title: req.body.title,
+      price: req.body.price,
+      description: req.body.description,
+      _id: req.body.productId,
+    });
 
     await product.save();
 
@@ -68,20 +66,23 @@ exports.postEditProduct = async (req, res, next) => {
   }
 };
 
-exports.postAddProduct = (req, res) => {
-  const title = req.body.title;
-  const price = req.body.price;
-  const description = req.body.description;
-
-  const product = new Product(title, price, description);
-  product.save().then((res) => {
+exports.postAddProduct = async (req, res) => {
+  const product = new Product({
+    title: req.body.title,
+    price: req.body.price,
+    description: req.body.description,
+  });
+  try {
+    await product.save();
     console.log("Created product");
     res.redirect("/admin/products");
-  });
+  } catch {
+    console.log("Post add product error");
+  }
 };
 
 exports.postDeleteProduct = async (req, res) => {
   const prodId = req.body.productId;
-  await deleteProductById(prodId);
+  await Product.deleteById(prodId);
   res.redirect("/admin/products");
 };
