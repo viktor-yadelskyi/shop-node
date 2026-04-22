@@ -93,7 +93,7 @@ class Product {
     this.title = title;
     this.price = price;
     this.description = description;
-    this._id = _id;
+    this._id = new mongodb.ObjectId(_id);
   }
 
   save() {
@@ -102,7 +102,7 @@ class Product {
     if (this._id) {
       dbOp = db
         .collection("products")
-        .updateOne({ _id: new mongodb.ObjectId(this._id) }, { $set: this });
+        .updateOne({ _id: this._id }, { $set: this });
     } else {
       dbOp = db.collection("products").insertOne(this);
     }

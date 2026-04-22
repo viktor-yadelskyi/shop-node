@@ -1,4 +1,3 @@
-const mongodb = require("mongodb");
 const {
   createProduct,
   fetchAll,
@@ -6,8 +5,6 @@ const {
   deleteProductById,
   Product,
 } = require("../models/product");
-
-const ObjectId = mongodb.ObjectId;
 
 exports.getAddProduct = (req, res, next) => {
   res.render("admin/add-product", {
@@ -57,7 +54,7 @@ exports.postEditProduct = async (req, res, next) => {
     const prodId = req.body.productId;
 
     const product = new Product(
-      new ObjectId(prodId),
+      prodId,
       req.body.title,
       req.body.price,
       req.body.description,
