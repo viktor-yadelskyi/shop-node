@@ -71,6 +71,7 @@ exports.postAddProduct = async (req, res) => {
     title: req.body.title,
     price: req.body.price,
     description: req.body.description,
+    userId: req.user._id,
   });
   try {
     await product.save();
