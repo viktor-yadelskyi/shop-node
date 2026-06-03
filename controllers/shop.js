@@ -1,9 +1,5 @@
 const { fetchAll, findProductById, Product } = require("../models/product");
-const {
-  addProduct,
-  getCartData,
-  deleteProductCartById,
-} = require("../models/cart");
+const User = require("../models/user");
 
 exports.getProductsList = async (req, res, next) => {
   try {
@@ -55,27 +51,32 @@ exports.getIndex = async (req, res, next) => {
 };
 
 exports.getCart = async (req, res, next) => {
-  const cart = await getCartData();
-  res.render("shop/cart", {
-    path: "/cart",
-    pageTitle: "Cart",
-    products: cart.products,
-    totalPrice: cart.totalPrice,
-  });
+  try {
+    const cart = await req.user.getCart();
+
+    res.render("shop/cart", {
+      path: "/cart",
+      pageTitle: "Cart",
+      products: cart.products,
+      totalPrice: cart.totalPrice,
+    });
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.postCart = async (req, res, next) => {
-  const prodId = req.body.prodId;
-  const product = await findProductById(prodId);
+  try {
+    const prodId = req.body.prodId;
+    console.log("prodId:", prodId);
 
-  if (!product) {
-    console.log("Product not found", prodId);
-    return res.redirect("/cart");
+    const product = await Product.findById(prodId);
+    await req.user.addToCart(product);
+
+    res.redirect("/cart");
+  } catch (err) {
+    next(err);
   }
-
-  await addProduct(prodId, product.price);
-
-  res.redirect("/cart");
 };
 
 exports.postCardDeleteProduct = async (req, res) => {
