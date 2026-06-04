@@ -39,6 +39,22 @@ class User {
       .updateOne({ _id: new ObjectId(this._id) }, { $set: { cart: myCart } });
   }
 
+  deleteFromCart(prodId) {
+    const updatedCartItems = this.cart.items.filter(
+      (item) => item.productId.toString() !== prodId.toString(),
+    );
+
+    const db = getDb();
+    return db.collection("users").updateOne(
+      {
+        _id: new ObjectId(this._id),
+      },
+      {
+        $set: { cart: { items: updatedCartItems } },
+      },
+    );
+  }
+
   async getCart() {
     const productIds = this.cart.items.map((item) => item.productId);
 
