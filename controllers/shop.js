@@ -86,8 +86,26 @@ exports.postCardDeleteProduct = async (req, res) => {
   res.redirect("/cart");
 };
 
-exports.getOrders = (req, res, next) => {
-  res.render("shop/orders", { path: "/orders", pageTitle: "Your orders" });
+exports.getOrder = async (req, res, next) => {
+  try {
+    const orders = await req.user.getOrder();
+    res.render("shop/orders", {
+      path: "orders",
+      pageTitle: "Your orders",
+      orders,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.postOrder = async (req, res, next) => {
+  try {
+    await req.user.addOrder();
+    res.redirect("/orders");
+  } catch (err) {
+    next(err);
+  }
 };
 
 exports.getCheckout = (req, res, next) => {
